@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock, Paper, Scissors</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background: linear-gradient(45deg, #FF6B6B, #6BFF6B, #6B6BFF);
+            background-size: 200% 200%;
+            animation: gradientAnimation 10s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        h1 {
+            color: #fff;
+        }
+
+        .choices {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .choice {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            margin: 5px;
+            background-color: rgba(255, 255, 255, 0.8);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .choice:hover {
+            background-color: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #fff;
+            animation: floatAway 2s ease-in-out;
+        }
+
+        @keyframes floatAway {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+        }
+
+        #images {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            margin: 5px;
+            transition: transform 0.2s ease;
+        }
+
+        img:hover {
+            transform: scale(1.1);
+        }
+
+        #leaderboard {
+            margin-top: 20px;
+            color: #fff;
+        }
+
+        #buttons {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            margin: 5px;
+            background-color: rgba(255, 255, 255, 0.8);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Rock, Paper, Scissors</h1>
+    <div class="choices">
+        <div class="choice" onmouseover="animateChoice(this)" onclick="playGame('rock')">Rock</div>
+        <div class="choice" onmouseover="animateChoice(this)" onclick="playGame('paper')">Paper</div>
+        <div class="choice" onmouseover="animateChoice(this)" onclick="playGame('scissors')">Scissors</div>
+    </div>
+
+    <div id="images">
+        <img src="https://static9.depositphotos.com/1323776/1099/i/450/depositphotos_10996532-stock-photo-rock-boulder.jpg" alt="rock" onclick="playGame('rock')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR35E-HL385l_iMF8pSdd3COAmA549c7RfHG7X6chuXLg&s" alt="paper" onclick="playGame('paper')">
+        <img src="https://images.unsplash.com/photo-1586074299757-dc655f18518c?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHBhcGVyfGVufDB8fDB8fHww" alt="scissors" onclick="playGame('scissors')">
+    </div>
+
+    <div id="result"></div>
+    <div id="leaderboard"></div>
+    <div id="buttons"></div>
+
+    <script>
+        let playerWins = parseInt(localStorage.getItem('playerWins')) || 0;
+        let computerWins = parseInt(localStorage.getItem('computerWins')) || 0;
+
+        function playGame(userChoice) {
+            const choices = ['rock', 'paper', 'scissors'];
+            const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+
+            const result = getResult(userChoice, computerChoice);
+
+            document.getElementById('result').innerHTML = `
+                You chose: ${userChoice}<br>
+                Computer chose: ${computerChoice}<br>
+                Result: ${result}
+            `;
+
+            document.querySelectorAll('img').forEach(img => img.style.transform = 'scale(1)');
+            document.querySelector(`img[alt="${userChoice}"]`).style.transform = 'scale(1.1)';
+
+            if (result === 'You win!') {
+                playerWins++;
+            } else if (result === 'Computer wins!') {
+                computerWins++;
+            }
+
+            updateLeaderboard();
+
+            // Display restart button below leaderboard
+            document.getElementById('buttons').innerHTML = `<button onclick="restartGame()">Restart Game</button>`;
+
+            // Save wins to local storage
+            localStorage.setItem('playerWins', playerWins);
+            localStorage.setItem('computerWins', computerWins);
+        }
+
+        function getResult(userChoice, computerChoice) {
+            if (userChoice === computerChoice) {
+                return 'It\'s a draw!';
+            } else if (
+                (userChoice === 'rock' && computerChoice === 'scissors') ||
+                (userChoice === 'paper' && computerChoice === 'rock') ||
+                (userChoice === 'scissors' && computerChoice === 'paper')
+            ) {
+                return 'You win!';
+            } else {
+                return 'Computer wins!';
+            }
+        }
+
+        function animateChoice(element) {
+            let scale = 1.1;
+            const interval = setInterval(() => {
+                if (scale > 1) {
+                    element.style.transform = `scale(${scale})`;
+                    scale -= 0.1;
+                } else {
+                    clearInterval(interval);
+                    element.style.transform = 'scale(1)';
+                }
+            }, 20);
+        }
+
+        function updateLeaderboard() {
+            document.getElementById('leaderboard').innerHTML = `Player Wins: ${playerWins} | Computer Wins: ${computerWins}`;
+        }
+
+        function restartGame() {
+            playerWins = 0;
+            computerWins = 0;
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('buttons').innerHTML = '';
+            updateLeaderboard();
+            // Clear wins from local storage on restart
+            localStorage.removeItem('playerWins');
+            localStorage.removeItem('computerWins');
+        }
+    </script>
+</body>
+
+</html>
