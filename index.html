@@ -6,71 +6,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rock, Paper, Scissors</title>
     <style>
-        /* Your CSS styles remain unchanged */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background: linear-gradient(45deg, #FF6B6B, #6BFF6B, #6B6BFF);
+            background-size: 200% 200%;
+            animation: gradientAnimation 10s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        h1 {
+            color: #fff;
+        }
+
+        #images {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            margin: 5px;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        img:hover {
+            transform: scale(1.1);
+        }
     </style>
 </head>
 
 <body>
     <h1>Rock, Paper, Scissors</h1>
-    <div class="choices">
-        <div class="choice" onmouseover="animateChoice(this)" onclick="playGame('rock')">Rock</div>
-        <div class="choice" onmouseover="animateChoice(this)" onclick="playGame('paper')">Paper</div>
-        <div class="choice" onmouseover="animateChoice(this)" onclick="playGame('scissors')">Scissors</div>
-    </div>
 
     <div id="images">
-        <img src="https://static9.depositphotos.com/1323776/1099/i/450/depositphotos_10996532-stock-photo-rock-boulder.jpg" alt="rock" onclick="playGame('rock')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR35E-HL385l_iMF8pSdd3COAmA549c7RfHG7X6chuXLg&s" alt="paper" onclick="playGame('paper')">
-        <img src="https://images.unsplash.com/photo-1586074299757-dc655f18518c?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHNjaXNzb3JzfGVufDB8fDB8fHww" alt="scissors" onclick="playGame('scissors')">
+        <img src="https://static9.depositphotos.com/1323776/1099/i/450/depositphotos_10996532-stock-photo-rock-boulder.jpg" alt="rock" onclick="showAlert()">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR35E-HL385l_iMF8pSdd3COAmA549c7RfHG7X6chuXLg&s" alt="paper" onclick="showAlert()">
+        <img src="https://images.unsplash.com/photo-1586074299757-dc655f18518c?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHNjaXNzb3JzfGVufDB8fDB8fHww" alt="scissors" onclick="showAlert()">
     </div>
 
-    <div id="result"></div>
-    <div id="leaderboard"></div>
-    <div id="buttons"></div>
-
     <script>
-        let playerWins = parseInt(localStorage.getItem('playerWins')) || 0;
-        let computerWins = parseInt(localStorage.getItem('computerWins')) || 0;
-        let underMaintenance = true; // Set to false to disable maintenance mode
-
-        function playGame(userChoice) {
-            if (underMaintenance) {
-                alert('Servers Are Busy Right Now. Come Back Later.');
-                return;
-            }
-
-            const choices = ['rock', 'paper', 'scissors'];
-            const computerChoice = choices[Math.floor(Math.random() * choices.length)];
-
-            const result = getResult(userChoice, computerChoice);
-
-            document.getElementById('result').innerHTML = `
-                You chose: ${userChoice}<br>
-                Computer chose: ${computerChoice}<br>
-                Result: ${result}
-            `;
-
-            document.querySelectorAll('img').forEach(img => img.style.transform = 'scale(1)');
-            document.querySelector(`img[alt="${userChoice}"]`).style.transform = 'scale(1.1)';
-
-            if (result === 'You win!') {
-                playerWins++;
-            } else if (result === 'Computer wins!') {
-                computerWins++;
-            }
-
-            updateLeaderboard();
-
-            // Display restart button below leaderboard
-            document.getElementById('buttons').innerHTML = `<button onclick="restartGame()">Restart Game</button>`;
-
-            // Save wins to local storage
-            localStorage.setItem('playerWins', playerWins);
-            localStorage.setItem('computerWins', computerWins);
+        function showAlert() {
+            alert('Servers Are Busy Right Now. Please come back later.');
         }
-
-        // Other functions remain unchanged...
-
     </script>
 </body>
 
