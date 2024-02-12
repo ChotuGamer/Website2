@@ -179,7 +179,7 @@
         let lastClicked = 0;
 
         function playGame(userChoice) {
-            const cooldown = 2; // 2 seconds delay
+            const cooldown = 3; // 3 seconds delay
             const now = new Date().getTime();
             if (now - lastClicked < cooldown * 1000) {
                 alert(`Please wait ${cooldown} seconds before making another choice.`);
