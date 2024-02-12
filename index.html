@@ -7,10 +7,10 @@
     <title>Rock, Paper, Scissors</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
             margin: 50px;
-            background: linear-gradient(45deg, #FF6B6B, #6BFF6B, #6B6BFF);
+            background: linear-gradient(45deg, #1e3c72, #2a5298, #73c8a9);
             background-size: 200% 200%;
             animation: gradientAnimation 10s ease infinite;
         }
@@ -27,10 +27,13 @@
             100% {
                 background-position: 0% 50%;
             }
+
         }
 
         h1 {
             color: #fff;
+            font-size: 36px;
+            margin-bottom: 20px;
         }
 
         .choices {
@@ -40,24 +43,25 @@
         }
 
         .choice {
-            padding: 10px 20px;
-            font-size: 18px;
+            padding: 15px 30px;
+            font-size: 20px;
             cursor: pointer;
-            border: 2px solid #fff;
-            border-radius: 5px;
-            margin: 5px;
-            background-color: rgba(255, 255, 255, 0.8);
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            border: 3px solid #fff;
+            border-radius: 10px;
+            margin: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
         }
 
         .choice:hover {
             background-color: rgba(255, 255, 255, 1);
             transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
         }
 
         #result {
-            margin-top: 20px;
-            font-size: 24px;
+            margin-top: 30px;
+            font-size: 28px;
             color: #fff;
             animation: floatAway 2s ease-in-out;
         }
@@ -69,63 +73,68 @@
             }
 
             100% {
-                transform: translateY(-100px);
+                transform: translateY(-50px);
                 opacity: 0;
             }
         }
 
         #images {
-            margin-top: 20px;
+            margin-top: 30px;
             display: flex;
             justify-content: space-around;
         }
 
         img {
-            width: 100px;
-            height: 100px;
-            border: 2px solid #fff;
-            border-radius: 5px;
-            margin: 5px;
+            width: 120px;
+            height: 120px;
+            border: 3px solid #fff;
+            border-radius: 10px;
+            margin: 10px;
             transition: transform 0.2s ease;
         }
 
         img:hover {
-            transform: scale(1.1);
+            transform: scale(1.2);
         }
 
         #leaderboard {
-            margin-top: 20px;
+            margin-top: 30px;
             color: #fff;
+            font-size: 22px;
         }
 
         #buttons {
-            margin-top: 20px;
+            margin-top: 30px;
         }
 
         button {
-            padding: 10px 20px;
-            font-size: 18px;
+            padding: 15px 30px;
+            font-size: 20px;
             cursor: pointer;
-            border: 2px solid #fff;
-            border-radius: 5px;
-            margin: 5px;
-            background-color: rgba(255, 255, 255, 0.8);
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            border: 3px solid #fff;
+            border-radius: 10px;
+            margin: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
         }
 
         button:hover {
             background-color: rgba(255, 255, 255, 1);
             transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
         }
     </style>
 </head>
 
 <body>
+
     <h1>Rock, Paper, Scissors</h1>
+
+    <!-- Rock, Paper, Scissors Game -->
     <div class="choices">
-        <div class="choice" onmouseover="animateChoice(this)" onclick="playGame('rock')">Rock</div>
-        <div class="choice" onmouseover="animateChoice(this)" onclick="playGame('paper')">Paper</div>
-        <div class="choice" onmouseover="animateChoice(this)" onclick="playGame('scissors')">Scissors</div>
+        <div class="choice" onclick="playGame('rock')">Rock</div>
+        <div class="choice" onclick="playGame('paper')">Paper</div>
+        <div class="choice" onclick="playGame('scissors')">Scissors</div>
     </div>
 
     <div id="images">
@@ -141,13 +150,17 @@
     <script>
         let playerWins = parseInt(localStorage.getItem('playerWins')) || 0;
         let computerWins = parseInt(localStorage.getItem('computerWins')) || 0;
-        let underMaintenance = true; // Set to false to disable maintenance mode
+        let lastClicked = 0;
 
         function playGame(userChoice) {
-            if (underMaintenance) {
-                alert('Servers Are Undermaintenance Rn Please Come Back Later!.');
+            const cooldown = 2; // 2 seconds delay
+            const now = new Date().getTime();
+            if (now - lastClicked < cooldown * 1000) {
+                alert(`Please wait ${cooldown} seconds before making another choice.`);
                 return;
             }
+
+            lastClicked = now;
 
             const choices = ['rock', 'paper', 'scissors'];
             const computerChoice = choices[Math.floor(Math.random() * choices.length)];
@@ -161,7 +174,7 @@
             `;
 
             document.querySelectorAll('img').forEach(img => img.style.transform = 'scale(1)');
-            document.querySelector(`img[alt="${userChoice}"]`).style.transform = 'scale(1.1)';
+            document.querySelector(`img[alt="${userChoice}"]`).style.transform = 'scale(1.2)';
 
             if (result === 'You win!') {
                 playerWins++;
@@ -179,8 +192,34 @@
             localStorage.setItem('computerWins', computerWins);
         }
 
-        // Other functions remain unchanged...
+        function getResult(userChoice, computerChoice) {
+            if (userChoice === computerChoice) {
+                return 'It\'s a draw!';
+            } else if (
+                (userChoice === 'rock' && computerChoice === 'scissors') ||
+                (userChoice === 'paper' && computerChoice === 'rock') ||
+                (userChoice === 'scissors' && computerChoice === 'paper')
+            ) {
+                return 'You win!';
+            } else {
+                return 'Computer wins!';
+            }
+        }
 
+        function updateLeaderboard() {
+            document.getElementById('leaderboard').innerHTML = `Player Wins: ${playerWins} | Computer Wins: ${computerWins}`;
+        }
+
+        function restartGame() {
+            playerWins = 0;
+            computerWins = 0;
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('buttons').innerHTML = '';
+            updateLeaderboard();
+            // Clear wins from local storage on restart
+            localStorage.removeItem('playerWins');
+            localStorage.removeItem('computerWins');
+        }
     </script>
 </body>
 
