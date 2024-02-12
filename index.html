@@ -188,7 +188,7 @@
 
             lastClicked = now;
 
-            const choices = ['rock', 'paper', 'scissors'];
+            const choices = ['rock', 'scissors', 'paper'];
             const computerChoice = getComputerChoice();
 
             const result = getResult(userChoice, computerChoice);
@@ -219,10 +219,18 @@
         }
 
         function getComputerChoice() {
-            // Simple AI pattern: alternates between rock, paper, and scissors
-            const choices = ['rock', 'paper', 'scissors'];
+            // Super AI: Select the option that beats the player's previous move
+            const choices = ['rock', 'scissors', 'paper'];
             const index = (playerWins + computerWins) % choices.length;
-            return choices[index];
+            const playerLastMove = choices[(index - 1 + choices.length) % choices.length];
+            switch (playerLastMove) {
+                case 'rock':
+                    return 'paper';
+                case 'scissors':
+                    return 'rock';
+                case 'paper':
+                    return 'scissors';
+            }
         }
 
         function getResult(userChoice, computerChoice) {
@@ -230,8 +238,8 @@
                 return 'It\'s a draw!';
             } else if (
                 (userChoice === 'rock' && computerChoice === 'scissors') ||
-                (userChoice === 'paper' && computerChoice === 'rock') ||
-                (userChoice === 'scissors' && computerChoice === 'paper')
+                (userChoice === 'scissors' && computerChoice === 'paper') ||
+                (userChoice === 'paper' && computerChoice === 'rock')
             ) {
                 return 'You win!';
             } else {
