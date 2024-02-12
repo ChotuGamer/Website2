@@ -9,10 +9,12 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-            margin: 50px;
-            background: linear-gradient(45deg, #1e3c72, #2a5298, #73c8a9);
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(45deg, #304352, #d7d2cc);
             background-size: 200% 200%;
             animation: gradientAnimation 10s ease infinite;
+            color: #fff;
         }
 
         @keyframes gradientAnimation {
@@ -27,18 +29,17 @@
             100% {
                 background-position: 0% 50%;
             }
-
         }
 
         h1 {
-            color: #fff;
             font-size: 36px;
             margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
 
         .choices {
             display: flex;
-            justify-content: space-around;
+            justify-content: center;
             margin-top: 20px;
         }
 
@@ -51,6 +52,7 @@
             margin: 10px;
             background-color: rgba(255, 255, 255, 0.9);
             transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            color: #000; /* Black text color */
         }
 
         .choice:hover {
@@ -62,7 +64,7 @@
         #result {
             margin-top: 30px;
             font-size: 28px;
-            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
             animation: floatAway 2s ease-in-out;
         }
 
@@ -81,7 +83,9 @@
         #images {
             margin-top: 30px;
             display: flex;
-            justify-content: space-around;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
         img {
@@ -97,10 +101,32 @@
             transform: scale(1.2);
         }
 
+        #rock-image {
+            order: 1;
+        }
+
+        #scissors-image {
+            order: 2;
+        }
+
+        #paper-image {
+            order: 3;
+        }
+
         #leaderboard {
             margin-top: 30px;
-            color: #fff;
             font-size: 22px;
+            background: linear-gradient(45deg, #ff5e62, #ff9966);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #leaderboard span {
+            flex: 1;
         }
 
         #buttons {
@@ -133,14 +159,14 @@
     <!-- Rock, Paper, Scissors Game -->
     <div class="choices">
         <div class="choice" onclick="playGame('rock')">Rock</div>
-        <div class="choice" onclick="playGame('paper')">Paper</div>
         <div class="choice" onclick="playGame('scissors')">Scissors</div>
+        <div class="choice" onclick="playGame('paper')">Paper</div>
     </div>
 
     <div id="images">
-        <img src="https://static9.depositphotos.com/1323776/1099/i/450/depositphotos_10996532-stock-photo-rock-boulder.jpg" alt="rock" onclick="playGame('rock')">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR35E-HL385l_iMF8pSdd3COAmA549c7RfHG7X6chuXLg&s" alt="paper" onclick="playGame('paper')">
-        <img src="https://images.unsplash.com/photo-1586074299757-dc655f18518c?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHNjaXNzb3JzfGVufDB8fDB8fHww" alt="scissors" onclick="playGame('scissors')">
+        <img id="rock-image" src="https://static9.depositphotos.com/1323776/1099/i/450/depositphotos_10996532-stock-photo-rock-boulder.jpg" alt="rock" onclick="playGame('rock')">
+        <img id="scissors-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR35E-HL385l_iMF8pSdd3COAmA549c7RfHG7X6chuXLg&s" alt="scissors" onclick="playGame('scissors')">
+        <img id="paper-image" src="https://images.unsplash.com/photo-1586074299757-dc655f18518c?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHNjaXNzb3JzfGVufDB8fDB8fHww" alt="paper" onclick="playGame('paper')">
     </div>
 
     <div id="result"></div>
@@ -163,7 +189,7 @@
             lastClicked = now;
 
             const choices = ['rock', 'paper', 'scissors'];
-            const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+            const computerChoice = getComputerChoice();
 
             const result = getResult(userChoice, computerChoice);
 
@@ -192,6 +218,13 @@
             localStorage.setItem('computerWins', computerWins);
         }
 
+        function getComputerChoice() {
+            // Simple AI pattern: alternates between rock, paper, and scissors
+            const choices = ['rock', 'paper', 'scissors'];
+            const index = (playerWins + computerWins) % choices.length;
+            return choices[index];
+        }
+
         function getResult(userChoice, computerChoice) {
             if (userChoice === computerChoice) {
                 return 'It\'s a draw!';
@@ -207,7 +240,10 @@
         }
 
         function updateLeaderboard() {
-            document.getElementById('leaderboard').innerHTML = `Player Wins: ${playerWins} | Computer Wins: ${computerWins}`;
+            document.getElementById('leaderboard').innerHTML = `
+                <span>Player Wins: ${playerWins}</span>
+                <span>Computer Wins: ${computerWins}</span>
+            `;
         }
 
         function restartGame() {
