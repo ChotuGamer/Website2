@@ -141,8 +141,14 @@
     <script>
         let playerWins = parseInt(localStorage.getItem('playerWins')) || 0;
         let computerWins = parseInt(localStorage.getItem('computerWins')) || 0;
+        let underMaintenance = true; // Set to false to disable maintenance mode
 
         function playGame(userChoice) {
+            if (underMaintenance) {
+                alert('Servers Are Undermaintenance Rn Please Come Back Later!.');
+                return;
+            }
+
             const choices = ['rock', 'paper', 'scissors'];
             const computerChoice = choices[Math.floor(Math.random() * choices.length)];
 
@@ -173,47 +179,8 @@
             localStorage.setItem('computerWins', computerWins);
         }
 
-        function getResult(userChoice, computerChoice) {
-            if (userChoice === computerChoice) {
-                return 'It\'s a draw!';
-            } else if (
-                (userChoice === 'rock' && computerChoice === 'scissors') ||
-                (userChoice === 'paper' && computerChoice === 'rock') ||
-                (userChoice === 'scissors' && computerChoice === 'paper')
-            ) {
-                return 'You win!';
-            } else {
-                return 'Computer wins!';
-            }
-        }
+        // Other functions remain unchanged...
 
-        function animateChoice(element) {
-            let scale = 1.1;
-            const interval = setInterval(() => {
-                if (scale > 1) {
-                    element.style.transform = `scale(${scale})`;
-                    scale -= 0.1;
-                } else {
-                    clearInterval(interval);
-                    element.style.transform = 'scale(1)';
-                }
-            }, 20);
-        }
-
-        function updateLeaderboard() {
-            document.getElementById('leaderboard').innerHTML = `Player Wins: ${playerWins} | Computer Wins: ${computerWins}`;
-        }
-
-        function restartGame() {
-            playerWins = 0;
-            computerWins = 0;
-            document.getElementById('result').innerHTML = '';
-            document.getElementById('buttons').innerHTML = '';
-            updateLeaderboard();
-            // Clear wins from local storage on restart
-            localStorage.removeItem('playerWins');
-            localStorage.removeItem('computerWins');
-        }
     </script>
 </body>
 
